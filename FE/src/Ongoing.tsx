@@ -9,11 +9,13 @@ const Ongoing = ()=>{
        viewTodo().then((res:any) =>{
         setState(res)
        })
-    }, [])
+    }, [state])
     return(
         <div>
              <Container>
-              {state?.map((prop:any)=>{
+              {state && state?.filter((el:any)=>{
+                return el.done === "ongoing"
+              }).map((prop:any)=>{
                 return(
                     <Card key={prop._id}>
                     <Top>{prop.task}</Top>
@@ -27,16 +29,17 @@ const Ongoing = ()=>{
                     <div>
                         {/* {prop.done === "start"?("achieved"):("not")} */}
                     </div>
-                   {prop.achieved === null ?
-                   (
+                  
+                  {prop.achieved === null
+                   ?(
                     <StrBtn 
                     onClick={() =>{
-                      updatTodo(prop.id)
+                      updatTodo(prop._id)
                     }}
-                  >Upload Finished Task</StrBtn>
-                   ): (
-                    <div>Tasked terminated</div>
-                   )}
+                  >Upload Finished Task</StrBtn> )
+                   :(  <div>Tasked terminated</div>)
+                  }
+                  
                  </Card>
                 )
               })}

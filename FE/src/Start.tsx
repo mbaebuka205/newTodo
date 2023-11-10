@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { viewTodo, viewTodoTop } from "./api/Api";
+import { updatTodo, viewTodo, viewTodoTop } from "./api/Api";
 import {useState, useEffect} from 'react'
 import moment from "moment";
 
@@ -17,7 +17,9 @@ const Start = ()=>{
     return(
         <div>
             <Container>
-               {state?.map((prop:any)=>{
+               {state && state?.filter((el:any) =>{
+                return el.done === "start"
+               }).map((prop:any)=>{
                  return(
                    <Card  >
                     <StrBt>Started To Do</StrBt>
@@ -29,11 +31,14 @@ const Start = ()=>{
                   <TimeFrame>Weldone you just created a task 👍</TimeFrame>
                   <hr/>
                   </Middle>
-                 {prop.achieved === null?(
-                   <StrBtn>Started To Do</StrBtn>
-                 ):(
-                  <div>Tasked terminated</div>
-                 )}
+                  {prop.achieved === null
+                   ?( <StrBtn
+                    onClick={()=>{
+                     updatTodo(prop._id)
+                    }}
+                   >Started To Do</StrBtn>)
+                   :(<div>Tasked terminated</div>)
+                  }
               </Card>
                 )
                })}

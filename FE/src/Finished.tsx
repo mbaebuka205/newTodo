@@ -13,7 +13,10 @@ const Finished = ()=>{
     return(
         <div>
               <Container>
-                {state?.map((prop: any)=>{
+                {state && state?.filter((el:any)=>{
+                    return el === "finished"
+                })
+                .map((prop: any)=>{
                      return(
                         <Card>
                         <StrBtn>Finished</StrBtn>

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 // import mongoose from "mongoose";
 import { statusCode } from "../utils/statusCode";
+import { taskEnum } from "../utils/statusCode";
 import todoModel, { iTodoData } from "../model/todoModel";
 import moment from "moment";
 
@@ -75,8 +76,8 @@ export const viewTodo = async(req:Request, res:Response) =>{
      
      const todo = await todoModel.find().sort({
         createdAt: -1
-     }).limit(1)
-    //  .limit(1).exec()
+     })
+     .limit(1).exec()
 
      return res.status(statusCode.OK).json({
          message:"created",
@@ -127,31 +128,38 @@ export const viewTodo = async(req:Request, res:Response) =>{
 
  export const viewOneAndUpdateTodo = async(req:Request, res:Response) =>{
     try{
-        const {done} = req.body;
         const {todoID} = req.params
 
         const check: iTodoData | null = await todoModel.findById(todoID)
-
-        if (check?.achieved) {
-            return res.status(statusCode.BAD_REQUEST).json({
-                message:" Time has elapse"
-            })
-        }  else{
+        
+        if(check?.done === "start") {
             const todo = await todoModel.findByIdAndUpdate(
-                todoID,
-                { done },
-                { new: true}
-            );
-
-            return res.status(statusCode.BAD_REQUEST).json({
-                message: "updated",
-                data:todo
+                {_id: todoID},
+                {done: "ongoing"},
+                {new: true}
+            )
+            res.status(statusCode.OK).json({
+                message:"Updated",
+                data: todo
+            })
+        } else if (check?.done === "ongoing") {
+            const todo = await todoModel.findByIdAndUpdate(
+                {_id: todoID},
+                {
+                    done:"done",
+                    deadLine: moment(new Date().getTime()).format('LLLL')
+                },
+                {new: true}
+            )
+            res.status(statusCode.OK).json({
+                message:"Updated",
+                data: todo
             })
         }
   
    } catch(error){
     return res.status(statusCode.BAD_REQUEST).json({
-        message:"error",
+        message:"error",error
     })
    }
 } 

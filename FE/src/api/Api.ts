@@ -32,7 +32,10 @@ export const viewTodoTop = async() =>{
 
 export const updatTodo = async (todoID:string) =>{
     try{
-        return await axios.patch(`${URL}/update-todo/${todoID}`)
+        return await axios.patch(`${URL}/updat-todo/${todoID}`).then((res)=>{
+            console.log("update", res);
+            
+        })
     } catch(error) {
         console.log(error)
     }
